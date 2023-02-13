@@ -15,6 +15,10 @@
 
 #define RING_BUFFER_SIZE 256
 
+/**
+ * @brief Declaration of ring buffer struct.
+ * 
+ */
 typedef struct ring_buffer_t
 {
     unsigned int size;
@@ -24,4 +28,10 @@ typedef struct ring_buffer_t
     proc_stat_t *stats[];
 } ring_buffer_t;
 
+/**
+ * @brief Constructor of ring buffer
+ * 
+ * @param size Number of ring buffer elements.
+ * @return ring_buffer_t* 
+ */
 ring_buffer_t *ringbuffer_create(unsigned int size);
