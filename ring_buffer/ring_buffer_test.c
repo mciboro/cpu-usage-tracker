@@ -16,5 +16,8 @@ int main(void)
     ring_buffer_t *rbuf = ringbuffer_create(RING_BUFFER_SIZE);
     // assert(rbuf == NULL);
     assert(rbuf->struct_len == 2064);
+
+    ring_buffer_t *rbuf_null = ringbuffer_create(0);
+    assert(rbuf_null == NULL);
     return EXIT_SUCCESS;
 }
