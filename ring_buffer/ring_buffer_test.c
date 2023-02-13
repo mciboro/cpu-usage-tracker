@@ -7,11 +7,13 @@
  * 
  */
 
-#include <stdlib.h>
+#include <assert.h>
 
 #include "ring_buffer.h"
 
 int main(void)
 {
+    ring_buffer_t *rbuf = ringbuffer_create(RING_BUFFER_SIZE);
+    assert(rbuf == NULL);
     return EXIT_SUCCESS;
 }

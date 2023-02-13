@@ -5,7 +5,12 @@
  * library.
  * @version 0.1
  * @date 2023-02-13
- * 
+ *
  */
 
 #include "ring_buffer.h"
+
+ring_buffer_t *ringbuffer_create(unsigned int size)
+{
+    return NULL;
+}
