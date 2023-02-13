@@ -16,8 +16,14 @@ int main(void)
     ring_buffer_t *rbuf = ringbuffer_create(RING_BUFFER_SIZE);
     // assert(rbuf == NULL);
     assert(rbuf->struct_len == 2064);
+    assert(rbuf->size == RING_BUFFER_SIZE);
+    assert(rbuf->write_index == 0);
+    assert(rbuf->read_index == 0);
 
     ring_buffer_t *rbuf_null = ringbuffer_create(0);
     assert(rbuf_null == NULL);
+
+    ringbuffer_destroy(&rbuf);
+    assert(rbuf == NULL);
     return EXIT_SUCCESS;
 }
