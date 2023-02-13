@@ -35,7 +35,11 @@ int ringbuffer_destroy(ring_buffer_t **_rbuf)
     {
         free(rbuf);
         *_rbuf = NULL;
+        return 0;
     }
-
-    return 0;
+    else
+    {
+        printf("Memory already void!\n");
+        return -1;
+    }
 }

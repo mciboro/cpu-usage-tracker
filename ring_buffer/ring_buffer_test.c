@@ -25,5 +25,7 @@ int main(void)
 
     ringbuffer_destroy(&rbuf);
     assert(rbuf == NULL);
+
+    assert(ringbuffer_destroy(&rbuf_null) < 0);
     return EXIT_SUCCESS;
 }
