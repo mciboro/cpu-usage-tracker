@@ -12,5 +12,7 @@
 
 ring_buffer_t *ringbuffer_create(unsigned int size)
 {
-    return NULL;
+    ring_buffer_t *rbuf = malloc(sizeof(ring_buffer_t) + sizeof(proc_stat_t *) * size);
+    rbuf->struct_len = sizeof(ring_buffer_t) + sizeof(proc_stat_t *) * size;
+    return rbuf;
 }

@@ -8,6 +8,7 @@
  */
 #pragma once
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "proc_stat/proc_stat.h"
@@ -19,6 +20,7 @@ typedef struct ring_buffer_t
     unsigned int size;
     unsigned int write_index;
     unsigned int read_index;
+    unsigned int struct_len;
     proc_stat_t *stats[];
 } ring_buffer_t;
 
