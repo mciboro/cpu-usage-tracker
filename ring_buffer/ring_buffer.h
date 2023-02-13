@@ -11,13 +11,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "proc_stat/proc_stat.h"
-
 #define RING_BUFFER_SIZE 256
 
 /**
  * @brief Declaration of ring buffer struct.
- * 
+ *
  */
 typedef struct ring_buffer_t
 {
@@ -25,21 +23,21 @@ typedef struct ring_buffer_t
     unsigned int write_index;
     unsigned int read_index;
     unsigned int struct_len;
-    proc_stat_t *stats[];
+    void *data[];
 } ring_buffer_t;
 
 /**
  * @brief Constructor of ring buffer
- * 
+ *
  * @param size Number of ring buffer elements.
- * @return ring_buffer_t* 
+ * @return ring_buffer_t*
  */
 ring_buffer_t *ringbuffer_create(unsigned int size);
 
 /**
  * @brief Destructor of ringbuffer.
- * 
+ *
  * @param rbuf Pointer to pointer to ring buffer.
- * @return int 
+ * @return int
  */
 int ringbuffer_destroy(ring_buffer_t **_rbuf);
