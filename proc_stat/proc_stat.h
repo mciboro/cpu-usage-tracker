@@ -18,6 +18,7 @@
  */
 typedef struct proc_stat_t
 {
+    uint32_t core_number;
     uint32_t user;
     uint32_t nice;
     uint32_t system;
@@ -29,3 +30,5 @@ typedef struct proc_stat_t
     uint32_t guest;
     uint32_t guest_nice;
 } proc_stat_t;
+
+// int read_proc_stat();
