@@ -37,7 +37,7 @@ ring_buffer_t *ringbuffer_create(unsigned int const size);
  * @brief Destructor of ringbuffer.
  *
  * @param rbuf Pointer to pointer to ring buffer.
- * @return unsigned int
+ * @return unsigned int - Status of the operation.
  */
 unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
 
@@ -45,7 +45,15 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
  * @brief
  *
  * @param rbuf Pointer to ring buffer.
- * @param src
- * @return unsigned int
+ * @param src  Pointer to source data.
+ * @return unsigned int - Status of the operation.
  */
 unsigned int ringbuffer_add(ring_buffer_t *const rbuf, void *const src);
+
+/**
+ * @brief Get element from ringbuffer.
+ *
+ * @param rbuf Pointer to ring buffer.
+ * @return void* - Pointer to stored data.
+ */
+void *ringbuffer_get(ring_buffer_t *const rbuf);
