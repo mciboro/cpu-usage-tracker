@@ -56,3 +56,12 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, void *const src) {
 
     return 0;
 }
+
+void *ringbuffer_get(ring_buffer_t *const rbuf) {
+    if (!rbuf) {
+        printf("Ring buffer void!\n");
+        return NULL;
+    }
+
+    return rbuf->data[rbuf->read_index++];
+}
