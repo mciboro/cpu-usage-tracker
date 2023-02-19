@@ -26,7 +26,7 @@ ring_buffer_t *ringbuffer_create(unsigned int size) {
 
 int ringbuffer_destroy(ring_buffer_t **_rbuf) {
     ring_buffer_t *rbuf = *_rbuf;
-    if (rbuf != NULL) {
+    if (rbuf) {
         free(rbuf);
         *_rbuf = NULL;
         return 0;
