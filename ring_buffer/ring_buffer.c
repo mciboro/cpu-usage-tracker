@@ -10,7 +10,7 @@
 
 #include "ring_buffer.h"
 
-ring_buffer_t *ringbuffer_create(unsigned int size) {
+ring_buffer_t *ringbuffer_create(unsigned int const size) {
     if (size > 0) {
         ring_buffer_t *rbuf = malloc(sizeof(ring_buffer_t) + sizeof(void *) * size);
         rbuf->struct_len = sizeof(ring_buffer_t) + sizeof(void *) * size;
@@ -24,7 +24,7 @@ ring_buffer_t *ringbuffer_create(unsigned int size) {
     }
 }
 
-int ringbuffer_destroy(ring_buffer_t **_rbuf) {
+unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
     ring_buffer_t *rbuf = *_rbuf;
     if (rbuf) {
         free(rbuf);
@@ -32,6 +32,6 @@ int ringbuffer_destroy(ring_buffer_t **_rbuf) {
         return 0;
     } else {
         printf("Memory already void!\n");
-        return -1;
+        return 1;
     }
 }

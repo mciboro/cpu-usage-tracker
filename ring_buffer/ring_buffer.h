@@ -32,7 +32,7 @@ typedef struct ring_buffer_t
  * @param size Number of ring buffer elements.
  * @return ring_buffer_t*
  */
-ring_buffer_t *ringbuffer_create(unsigned int size);
+ring_buffer_t *ringbuffer_create(unsigned int const size);
 
 /**
  * @brief Destructor of ringbuffer.
@@ -40,4 +40,5 @@ ring_buffer_t *ringbuffer_create(unsigned int size);
  * @param rbuf Pointer to pointer to ring buffer.
  * @return int
  */
-int ringbuffer_destroy(ring_buffer_t **_rbuf);
+unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
+
