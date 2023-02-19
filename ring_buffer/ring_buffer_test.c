@@ -11,8 +11,7 @@
 
 #include "ring_buffer.h"
 
-int main(void)
-{
+int main(void) {
     ring_buffer_t *rbuf = ringbuffer_create(RING_BUFFER_SIZE);
     // assert(rbuf == NULL);
     assert(rbuf->struct_len == 2064);
