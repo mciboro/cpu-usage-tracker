@@ -17,13 +17,12 @@
  * @brief Declaration of ring buffer struct.
  *
  */
-typedef struct ring_buffer_t
-{
+typedef struct ring_buffer_t {
     unsigned int size;
     unsigned int write_index;
     unsigned int read_index;
     unsigned int struct_len;
-    void *data[];
+    void const *data[];
 } ring_buffer_t;
 
 /**
@@ -38,7 +37,14 @@ ring_buffer_t *ringbuffer_create(unsigned int const size);
  * @brief Destructor of ringbuffer.
  *
  * @param rbuf Pointer to pointer to ring buffer.
- * @return int
+ * @return unsigned int
  */
 unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
 
+/**
+ * @brief Add element to ring_buffer.
+ *
+ * @param src Pointer to data object.
+ * @return unsigned int
+ */
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, const void *const src);

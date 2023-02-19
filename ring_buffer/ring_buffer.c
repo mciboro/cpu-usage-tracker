@@ -35,3 +35,24 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
         return 1;
     }
 }
+
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, const void *const src) {
+    if (!rbuf) {
+        printf("Ring buffer void!\n");
+        return 1;
+    }
+
+    if (!src) {
+        printf("Source data object cannot be void!\n");
+        return 2;
+    }
+
+    rbuf->data[rbuf->write_index] = src;
+    if ((rbuf->write_index + 1) < rbuf->size) {
+        ++rbuf->write_index;
+    } else {
+        rbuf->write_index = 0;
+    }
+
+    return 0;
+}
