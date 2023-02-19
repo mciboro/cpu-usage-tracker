@@ -36,7 +36,7 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
     }
 }
 
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, const void *const src) {
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, void *const src) {
     if (!rbuf) {
         printf("Ring buffer void!\n");
         return 1;

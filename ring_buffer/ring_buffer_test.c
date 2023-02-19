@@ -21,14 +21,14 @@ int main(void) {
     assert(rbuf->read_index == 0);
 
     uint8_t const test_data = 12;
-    assert(ringbuffer_add(NULL, (const void *const) & test_data) == 1);
+    assert(ringbuffer_add(NULL, (void *const) & test_data) == 1);
     assert(ringbuffer_add(rbuf, NULL) == 2);
-    assert(!ringbuffer_add(rbuf, (const void *const) & test_data));
+    assert(!ringbuffer_add(rbuf, (void *const) & test_data));
     assert(rbuf->write_index == 1);
-    assert(rbuf->data[rbuf->read_index] == (const void *const) & test_data);
+    assert(rbuf->data[rbuf->read_index] == (void *const) & test_data);
 
     rbuf->write_index = RING_BUFFER_SIZE - 1;
-    ringbuffer_add(rbuf, (const void *const) & test_data);
+    ringbuffer_add(rbuf, (void *const) & test_data);
     assert(rbuf->write_index == 0);
 
     ring_buffer_t *rbuf_null = ringbuffer_create(0);

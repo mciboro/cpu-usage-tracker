@@ -22,7 +22,7 @@ typedef struct ring_buffer_t {
     unsigned int write_index;
     unsigned int read_index;
     unsigned int struct_len;
-    void const *data[];
+    void *data[];
 } ring_buffer_t;
 
 /**
@@ -42,9 +42,10 @@ ring_buffer_t *ringbuffer_create(unsigned int const size);
 unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
 
 /**
- * @brief Add element to ring_buffer.
+ * @brief
  *
- * @param src Pointer to data object.
+ * @param rbuf Pointer to ring buffer.
+ * @param src
  * @return unsigned int
  */
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, const void *const src);
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, void *const src);
