@@ -5,7 +5,6 @@
  * in /proc/stat file.
  * @version 0.1
  * @date 2023-02-13
- * 
+ *
  */
 #include "proc_stat.h"
-

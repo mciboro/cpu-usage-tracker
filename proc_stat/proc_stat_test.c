@@ -4,16 +4,14 @@
  * @brief Tests of procstat library.
  * @version 0.1
  * @date 2023-02-13
- * 
+ *
  */
 #include "proc_stat.h"
 #include <stdlib.h>
 
 /**
  * @brief Main function for procstat library unit tests.
- * 
- * @return int 
+ *
+ * @return int
  */
-int main(void) {
-    return EXIT_SUCCESS;
-}
+int main(void) { return EXIT_SUCCESS; }

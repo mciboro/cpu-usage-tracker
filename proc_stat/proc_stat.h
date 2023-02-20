@@ -16,8 +16,7 @@
  * from /proc/stat file for one cpu core.
  *
  */
-typedef struct proc_stat_t
-{
+typedef struct proc_stat_t {
     uint32_t core_number;
     uint32_t user;
     uint32_t nice;
