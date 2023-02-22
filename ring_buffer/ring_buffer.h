@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "proc_stat.h"
+
 #define RING_BUFFER_SIZE 256
 
 /**
@@ -22,7 +24,7 @@ typedef struct ring_buffer_t {
     unsigned int write_index;
     unsigned int read_index;
     unsigned int struct_len;
-    void *data[];
+    proc_stat_t data[];
 } ring_buffer_t;
 
 /**
@@ -48,7 +50,7 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
  * @param src  Pointer to source data.
  * @return unsigned int - Status of the operation.
  */
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, void *const src);
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, proc_stat_t const src);
 
 /**
  * @brief Get element from ringbuffer.
@@ -56,4 +58,4 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, void *const src);
  * @param rbuf Pointer to ring buffer.
  * @return void* - Pointer to stored data.
  */
-void *ringbuffer_get(ring_buffer_t *const rbuf);
+proc_stat_t ringbuffer_get(ring_buffer_t *const rbuf);

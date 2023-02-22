@@ -12,7 +12,7 @@
 
 ring_buffer_t *ringbuffer_create(unsigned int const size) {
     if (size > 0) {
-        ring_buffer_t *rbuf = malloc(sizeof(ring_buffer_t) + sizeof(void *) * size);
+        ring_buffer_t *rbuf = malloc(sizeof(ring_buffer_t) + sizeof(proc_stat_t) * size);
         rbuf->struct_len = sizeof(ring_buffer_t) + sizeof(void *) * size;
         rbuf->size = size;
         rbuf->read_index = 0;
@@ -36,15 +36,10 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
     }
 }
 
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, void *const src) {
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, proc_stat_t const src) {
     if (!rbuf) {
         printf("Ring buffer void!\n");
         return 1;
-    }
-
-    if (!src) {
-        printf("Source data object cannot be void!\n");
-        return 2;
     }
 
     rbuf->data[rbuf->write_index] = src;
@@ -57,10 +52,10 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, void *const src) {
     return 0;
 }
 
-void *ringbuffer_get(ring_buffer_t *const rbuf) {
+proc_stat_t ringbuffer_get(ring_buffer_t *const rbuf) {
     if (!rbuf) {
         printf("Ring buffer void!\n");
-        return NULL;
+        return;
     }
 
     return rbuf->data[rbuf->read_index++];

@@ -35,9 +35,7 @@ unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_st
     while (fscanf(fptr, "cpu%u %u %u %u %u %u %u %u %u %u %u\n", &tmp_line.core_number, &tmp_line.user,
                   &tmp_line.nice, &tmp_line.system, &tmp_line.idle, &tmp_line.iowait, &tmp_line.irq,
                   &tmp_line.softirq, &tmp_line.steal, &tmp_line.guest, &tmp_line.guest_nice) > 0) {
-        proc_stat_t *saved_line = malloc(sizeof(proc_stat_t));
-        memcpy(saved_line, &tmp_line, sizeof(proc_stat_t));
-        ringbuffer_add(rbuf, (void *const)saved_line);
+        ringbuffer_add(rbuf, tmp_line);
     }
 
     fclose(fptr);
