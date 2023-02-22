@@ -10,6 +10,12 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "ring_buffer/ring_buffer.h"
+
+#define MAX_LINE_SIZE 256 // Max size of one line read from file
 
 /**
  * @brief Structure holding statistics extracted
@@ -30,4 +36,12 @@ typedef struct proc_stat_t {
     uint32_t guest_nice;
 } proc_stat_t;
 
-// int read_proc_stat();
+/**
+ * @brief Function that reads /proc/stat and puts
+ * formatted data into ring buffer.
+ *
+ * @param rbuf - Pointer to ring buffer
+ * @param proc_stat_dir - Directory of proc stat file
+ * @return unsigned int
+ */
+unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_stat_dir);
