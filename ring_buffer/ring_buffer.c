@@ -26,12 +26,6 @@ ring_buffer_t *ringbuffer_create(unsigned int const size) {
 
 unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
     ring_buffer_t *rbuf = *_rbuf;
-    for(unsigned int i = 0; i < rbuf->size; i++) {
-        if(rbuf->data[i]) {
-            free(rbuf->data[i]);
-            rbuf->data[i] = NULL;
-        }
-    }
     if (rbuf) {
         free(rbuf);
         *_rbuf = NULL;
@@ -51,10 +45,6 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, void *const src) {
     if (!src) {
         printf("Source data object cannot be void!\n");
         return 2;
-    }
-    
-    if(rbuf->data[rbuf->write_index]) {
-        free(rbuf->data[rbuf->write_index]);
     }
 
     rbuf->data[rbuf->write_index] = src;
