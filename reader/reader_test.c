@@ -9,7 +9,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "proc_stat.h"
+#include "reader.h"
 #include "ring_buffer/ring_buffer.h"
 
 /**
@@ -19,10 +19,10 @@
  */
 int main(void) {
     ring_buffer_t *rbuf = ringbuffer_create(RING_BUFFER_SIZE);
-    assert(read_proc_stat(NULL, "../proc_stat/proc_stat_example1.txt") == 1);
+    assert(read_proc_stat(NULL, "../reader/proc_stat_example1.txt") == 1);
     assert(read_proc_stat(rbuf, NULL) == 2);
     assert(read_proc_stat(rbuf, "/proc/null") == 3);
-    assert(!read_proc_stat(rbuf, "../proc_stat/test_srcs/proc_stat_example1.txt"));
+    assert(!read_proc_stat(rbuf, "../reader/test_srcs/proc_stat_example1.txt"));
     assert(rbuf->write_index == 4);
     assert(((proc_stat_t *const)rbuf->data[0])->core_number == 0);
     assert(((proc_stat_t *const)rbuf->data[0])->user == 155241);
@@ -33,7 +33,7 @@ int main(void) {
     ringbuffer_destroy(&rbuf);
 
     rbuf = ringbuffer_create(RING_BUFFER_SIZE);
-    assert(!read_proc_stat(rbuf, "../proc_stat/test_srcs/proc_stat_example2.txt"));
+    assert(!read_proc_stat(rbuf, "../reader/test_srcs/proc_stat_example2.txt"));
     assert(rbuf->write_index == 8);
     assert(((proc_stat_t *const)rbuf->data[0])->core_number == 0);
     assert(((proc_stat_t *const)rbuf->data[0])->user == 394221);
@@ -47,7 +47,7 @@ int main(void) {
     ringbuffer_destroy(&rbuf);
 
     rbuf = ringbuffer_create(RING_BUFFER_SIZE);
-    assert(!read_proc_stat(rbuf, "../proc_stat/test_srcs/proc_stat_corrupted.txt"));
+    assert(!read_proc_stat(rbuf, "../reader/test_srcs/proc_stat_corrupted.txt"));
     assert(rbuf->write_index == 0);
     ringbuffer_destroy(&rbuf);
 

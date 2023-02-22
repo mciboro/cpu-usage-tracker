@@ -3,12 +3,12 @@ project(cpu-usage-tracker VERSION 0.1.0)
 
 add_compile_options(-Wall -Wextra -Wpedantic)
 
-add_library(procstat SHARED proc_stat/proc_stat.c)
-target_include_directories(procstat PUBLIC ./)
+add_library(reader SHARED reader/reader.c)
+target_include_directories(reader PUBLIC ./)
 
-add_executable(procstat-test proc_stat/proc_stat_test.c)
-target_link_libraries(procstat-test procstat ringbuffer)
-target_include_directories(procstat-test PUBLIC ./)
+add_executable(reader-test reader/reader_test.c)
+target_link_libraries(reader-test reader ringbuffer)
+target_include_directories(reader-test PUBLIC ./)
 
 add_library(ringbuffer SHARED ring_buffer/ring_buffer.c)
 

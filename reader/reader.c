@@ -1,13 +1,15 @@
 /**
- * @file proc_stat.c
+ * @file reader.c
  * @author Michał Ciborowski (mciborowski.it@gmail.com)
  * @brief Implementations of functions related to data
  * in /proc/stat file.
  * @version 0.1
- * @date 2023-02-13
- *
+ * @date 2023-02-23
+ * 
+ * @copyright Copyright (c) 2023
+ * 
  */
-#include "proc_stat.h"
+#include "reader.h"
 
 unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_stat_dir) {
     if (!rbuf) {
