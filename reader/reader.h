@@ -27,3 +27,12 @@
  * @return unsigned int
  */
 unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_stat_dir);
+
+/**
+ * @brief Function that reads number of CPU cores from proc stat file.
+ * 
+ * @param result 
+ * @param proc_stat_dir 
+ * @return unsigned int 
+ */
+unsigned int read_cores_num(unsigned int *const result, char const *const proc_stat_dir);
