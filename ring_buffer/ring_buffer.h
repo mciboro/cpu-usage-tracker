@@ -19,7 +19,7 @@
  * @brief Union holding one of the types of ring buffer data.
  * 
  */
-typedef union data_t {
+typedef union {
     proc_stat_t stat;
     core_result_t result;
 } data_t;
@@ -28,7 +28,7 @@ typedef union data_t {
  * @brief Declaration of ring buffer struct.
  *
  */
-typedef struct ring_buffer_t {
+typedef struct {
     unsigned int size;
     unsigned int write_index;
     unsigned int read_index;

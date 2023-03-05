@@ -19,7 +19,7 @@
  * from /proc/stat file for one cpu core.
  *
  */
-typedef struct proc_stat_t {
+typedef struct {
     uint32_t core_number;
     uint32_t user;
     uint32_t nice;
@@ -36,7 +36,7 @@ typedef struct proc_stat_t {
  * core usage and number of a core.
  * 
  */
-typedef struct core_result_t {
+typedef struct {
     uint32_t core_number;
     double result;
 } core_result_t;
