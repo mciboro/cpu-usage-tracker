@@ -29,13 +29,16 @@ unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_st
     }
 
     char tmp_str[MAX_LINE_SIZE] = {0};
+    unsigned int dummy = 0;
     proc_stat_t tmp_line = {0};
     fgets(tmp_str, MAX_LINE_SIZE, fptr); // skip first line of /proc/stat file
 
     while (fscanf(fptr, "cpu%u %u %u %u %u %u %u %u %u %u %u\n", &tmp_line.core_number, &tmp_line.user,
                   &tmp_line.nice, &tmp_line.system, &tmp_line.idle, &tmp_line.iowait, &tmp_line.irq,
-                  &tmp_line.softirq, &tmp_line.steal, &tmp_line.guest, &tmp_line.guest_nice) > 0) {
-        ringbuffer_add(rbuf, tmp_line);
+                  &tmp_line.softirq, &tmp_line.steal, &dummy, &dummy) > 0) {
+        data_t tmp_data = {0};
+        tmp_data.stat = tmp_line;
+        ringbuffer_add(rbuf, tmp_data, STAT);
     }
 
     fclose(fptr);

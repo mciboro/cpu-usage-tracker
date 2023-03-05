@@ -11,7 +11,7 @@
  */
 #pragma once
 
-#include "proc_stat.h"
+#include "utils.h"
 
 /**
  * @brief Function that calculates core usage.

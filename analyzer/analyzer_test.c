@@ -15,8 +15,8 @@
 #include <stdio.h>
 
 int main(void) {
-    proc_stat_t curr_stat = {0, 534982, 864, 110714, 8074729, 15548, 0, 1189, 0, 0, 0};
-    proc_stat_t prev_stat = {0, 535081, 864, 110753, 8076755, 15551, 0, 1190, 0, 0, 0};
+    proc_stat_t curr_stat = {0, 534982, 864, 110714, 8074729, 15548, 0, 1189, 0};
+    proc_stat_t prev_stat = {0, 535081, 864, 110753, 8076755, 15551, 0, 1190, 0};
     double const result = calculate_core_usage_from_proc_stat_t(curr_stat, prev_stat);
     assert(result > 6.4 && result < 6.5);
 

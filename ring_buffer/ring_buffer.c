@@ -10,17 +10,18 @@
 
 #include "ring_buffer.h"
 
-ring_buffer_t *ringbuffer_create(unsigned int const size) {
+unsigned int ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size) {
     if (size > 0) {
-        ring_buffer_t *rbuf = malloc(sizeof(ring_buffer_t) + sizeof(proc_stat_t) * size);
-        rbuf->struct_len = sizeof(ring_buffer_t) + sizeof(void *) * size;
+        ring_buffer_t *rbuf = malloc(sizeof(ring_buffer_t) + sizeof(data_t) * size);
+        rbuf->struct_len = sizeof(ring_buffer_t) + sizeof(data_t) * size;
         rbuf->size = size;
         rbuf->read_index = 0;
         rbuf->write_index = 0;
-        return rbuf;
+        *_rbuf = rbuf;
+        return 0;
     } else {
         printf("Size of ring buffer must be non zero!\n");
-        return NULL;
+        return 1;
     }
 }
 
@@ -36,14 +37,19 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
     }
 }
 
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, proc_stat_t const src) {
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src, DataType const type) {
     if (!rbuf) {
         printf("Ring buffer void!\n");
         return 1;
     }
 
-    rbuf->data[rbuf->write_index] = src;
-    if ((rbuf->write_index + 1) < rbuf->size) {
+    if (type == STAT) {
+        rbuf->data[rbuf->write_index].stat = src.stat;
+    } else if (type == RESULT) {
+        rbuf->data[rbuf->write_index].result = src.result;
+    }
+
+    if ((rbuf->write_index + 1) < RING_BUFFER_SIZE) {
         ++rbuf->write_index;
     } else {
         rbuf->write_index = 0;
@@ -52,11 +58,21 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, proc_stat_t const src) {
     return 0;
 }
 
-proc_stat_t ringbuffer_get(ring_buffer_t *const rbuf) {
+unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data, DataType const type) {
     if (!rbuf) {
         printf("Ring buffer void!\n");
-        return;
+        return 1;
     }
 
-    return rbuf->data[rbuf->read_index++];
+    if (!data) {
+        printf("Data object cannot be void!\n");
+        return 2;
+    }
+
+    if (type == STAT) {
+        data->stat = rbuf->data[rbuf->read_index++].stat;
+    } else if (type == RESULT) {
+        data->result = rbuf->data[rbuf->read_index++].result;
+    }
+    return 0;
 }

@@ -11,9 +11,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "proc_stat.h"
+#include "utils.h"
 
 #define RING_BUFFER_SIZE 256
+
+typedef enum DataType { STAT, RESULT } DataType;
+
+/**
+ * @brief Union holding one of the types of ring buffer data.
+ * 
+ */
+typedef union data_t {
+    proc_stat_t stat;
+    core_result_t result;
+} data_t;
 
 /**
  * @brief Declaration of ring buffer struct.
@@ -24,16 +35,16 @@ typedef struct ring_buffer_t {
     unsigned int write_index;
     unsigned int read_index;
     unsigned int struct_len;
-    proc_stat_t data[];
+    data_t data[];
 } ring_buffer_t;
 
 /**
  * @brief Constructor of ring buffer
  *
- * @param size Number of ring buffer elements.
- * @return ring_buffer_t*
+ * @param _rbuf Pointer to pointer to ring buffer.
+ * @return unsigned int - Status of the operation.
  */
-ring_buffer_t *ringbuffer_create(unsigned int const size);
+unsigned int ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size);
 
 /**
  * @brief Destructor of ringbuffer.
@@ -44,18 +55,21 @@ ring_buffer_t *ringbuffer_create(unsigned int const size);
 unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
 
 /**
- * @brief
+ * @brief Function that adds element to the buffer.
  *
- * @param rbuf Pointer to ring buffer.
- * @param src  Pointer to source data.
- * @return unsigned int - Status of the operation.
+ * @param rbuf
+ * @param src
+ * @param type
+ * @return unsigned int
  */
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, proc_stat_t const src);
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src, DataType const type);
 
 /**
- * @brief Get element from ringbuffer.
- *
- * @param rbuf Pointer to ring buffer.
- * @return void* - Pointer to stored data.
+ * @brief Function that retrieves element from the buffer.
+ * 
+ * @param rbuf 
+ * @param data 
+ * @param type 
+ * @return unsigned int 
  */
-proc_stat_t ringbuffer_get(ring_buffer_t *const rbuf);
+unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data, DataType const type);

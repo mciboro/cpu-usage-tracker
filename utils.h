@@ -1,13 +1,13 @@
 /**
- * @file proc_stat.h
+ * @file utils.h
  * @author Michał Ciborowski (mciborowski.it@gmail.com)
  * @brief Header file containing data structures and functions
  * which help read and extract informations from /proc/stat file.
  * @version 0.1
  * @date 2023-02-23
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 
 #pragma once
@@ -29,6 +29,14 @@ typedef struct proc_stat_t {
     uint32_t irq;
     uint32_t softirq;
     uint32_t steal;
-    uint32_t guest;
-    uint32_t guest_nice;
 } proc_stat_t;
+
+/**
+ * @brief Structure holding current procent of 
+ * core usage and number of a core.
+ * 
+ */
+typedef struct core_result_t {
+    uint32_t core_number;
+    double result;
+} core_result_t;
