@@ -13,6 +13,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(void) {
     proc_stat_t curr_stat = {0, 534982, 864, 110714, 8074729, 15548, 0, 1189, 0};
@@ -24,4 +25,6 @@ int main(void) {
     calculate_core_usage_from_proc_stat_t(zero_stat, curr_stat);
     calculate_core_usage_from_proc_stat_t(prev_stat, zero_stat);
     calculate_core_usage_from_proc_stat_t(zero_stat, zero_stat);
+
+    return EXIT_SUCCESS;
 }

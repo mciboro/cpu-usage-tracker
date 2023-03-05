@@ -17,7 +17,7 @@
 
 /**
  * @brief Union holding one of the types of ring buffer data.
- * 
+ *
  */
 typedef union {
     proc_stat_t stat;
@@ -64,10 +64,10 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src);
 
 /**
  * @brief Function that retrieves element from the buffer.
- * 
- * @param rbuf 
- * @param data 
- * @param type 
- * @return unsigned int 
+ *
+ * @param rbuf
+ * @param data
+ * @param type
+ * @return unsigned int
  */
 unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data);

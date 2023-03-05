@@ -13,7 +13,7 @@
 #include "ring_buffer.h"
 
 int main(void) {
-    ring_buffer_t *rbuf = NULL; 
+    ring_buffer_t *rbuf = NULL;
     assert(!ringbuffer_create(&rbuf, RING_BUFFER_SIZE));
     assert(rbuf);
     assert(rbuf->struct_len == 10256);
@@ -36,7 +36,7 @@ int main(void) {
     assert(!ringbuffer_destroy(&rbuf));
     assert(!rbuf);
 
-    ring_buffer_t *rbuf_null = NULL; 
+    ring_buffer_t *rbuf_null = NULL;
     ringbuffer_create(&rbuf_null, 0);
     assert(!rbuf_null);
 

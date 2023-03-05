@@ -28,7 +28,12 @@ double calculate_core_usage(unsigned int const previdle, unsigned int const prev
     double const totald = Total - PrevTotal;
     double const idled = Idle - PrevIdle;
 
-    return (totald - idled) / totald * 100;
+    double const result = (totald - idled) / totald * 100;
+    if(result != result) {
+        return 0;
+    } else {
+        return result;
+    }
 }
 
 double calculate_core_usage_from_proc_stat_t(proc_stat_t const prev_stats, proc_stat_t const curr_stat) {
