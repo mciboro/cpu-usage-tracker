@@ -24,13 +24,13 @@ int main(void) {
     proc_stat_t test_stat = {3, 396374, 5, 64126, 1974716, 334, 0, 9126, 0};
     data_t test_data = {0};
     test_data.stat = test_stat;
-    assert(ringbuffer_add(NULL, test_data, STAT) == 1);
-    assert(!ringbuffer_add(rbuf, test_data, STAT));
+    assert(ringbuffer_add(NULL, test_data) == 1);
+    assert(!ringbuffer_add(rbuf, test_data));
     assert(rbuf->write_index == 1);
     assert(rbuf->data[rbuf->read_index].stat.steal == test_data.stat.steal);
 
     rbuf->write_index = RING_BUFFER_SIZE - 1;
-    ringbuffer_add(rbuf, test_data, STAT);
+    ringbuffer_add(rbuf, test_data);
     assert(rbuf->write_index == 0);
 
     assert(!ringbuffer_destroy(&rbuf));

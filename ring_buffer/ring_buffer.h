@@ -15,8 +15,6 @@
 
 #define RING_BUFFER_SIZE 256
 
-typedef enum DataType { STAT, RESULT } DataType;
-
 /**
  * @brief Union holding one of the types of ring buffer data.
  * 
@@ -62,7 +60,7 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
  * @param type
  * @return unsigned int
  */
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src, DataType const type);
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src);
 
 /**
  * @brief Function that retrieves element from the buffer.
@@ -72,4 +70,4 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src, DataTyp
  * @param type 
  * @return unsigned int 
  */
-unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data, DataType const type);
+unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data);

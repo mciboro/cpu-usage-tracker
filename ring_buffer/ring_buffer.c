@@ -37,17 +37,13 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
     }
 }
 
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src, DataType const type) {
+unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src) {
     if (!rbuf) {
         printf("Ring buffer void!\n");
         return 1;
     }
 
-    if (type == STAT) {
-        rbuf->data[rbuf->write_index].stat = src.stat;
-    } else if (type == RESULT) {
-        rbuf->data[rbuf->write_index].result = src.result;
-    }
+    rbuf->data[rbuf->write_index] = src;
 
     if ((rbuf->write_index + 1) < RING_BUFFER_SIZE) {
         ++rbuf->write_index;
@@ -58,7 +54,7 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src, DataTyp
     return 0;
 }
 
-unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data, DataType const type) {
+unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data) {
     if (!rbuf) {
         printf("Ring buffer void!\n");
         return 1;
@@ -69,10 +65,6 @@ unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data, DataT
         return 2;
     }
 
-    if (type == STAT) {
-        data->stat = rbuf->data[rbuf->read_index++].stat;
-    } else if (type == RESULT) {
-        data->result = rbuf->data[rbuf->read_index++].result;
-    }
+    *data = rbuf->data[rbuf->read_index++];
     return 0;
 }

@@ -35,7 +35,7 @@ void *analyzer_func() {
 
         while (stats->read_index < stats->write_index) {
             data_t tmp = {0};
-            ringbuffer_get(stats, &tmp, STAT);
+            ringbuffer_get(stats, &tmp);
             buf[tmp.stat.core_number][0] = buf[tmp.stat.core_number][1];
             buf[tmp.stat.core_number][1] = tmp.stat;
         }
@@ -45,7 +45,7 @@ void *analyzer_func() {
             data_t result_data = {0};
             result_data.result.core_number = i;
             result_data.result.result = result;
-            ringbuffer_add(results, result_data, RESULT);
+            ringbuffer_add(results, result_data);
         }
         sleep(1);
     }
@@ -59,7 +59,7 @@ void *printer_func() {
 
         while (results->read_index < results->write_index) {
             data_t tmp = {0};
-            ringbuffer_get(results, &tmp, STAT);
+            ringbuffer_get(results, &tmp);
             printf("Core %d: %.2f%%\n", tmp.result.core_number, tmp.result.result);
         }
 

@@ -38,7 +38,7 @@ unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_st
                   &tmp_line.softirq, &tmp_line.steal, &dummy, &dummy) > 0) {
         data_t tmp_data = {0};
         tmp_data.stat = tmp_line;
-        ringbuffer_add(rbuf, tmp_data, STAT);
+        ringbuffer_add(rbuf, tmp_data);
     }
 
     fclose(fptr);
