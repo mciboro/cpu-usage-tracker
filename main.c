@@ -156,7 +156,7 @@ int main(void) {
 
     pthread_join(reader, NULL);
     pthread_join(analyzer, NULL);
-    pthread_join(reader, NULL);
+    pthread_join(printer, NULL);
 
     ringbuffer_destroy(&stats_buf);
     ringbuffer_destroy(&results_buf);
