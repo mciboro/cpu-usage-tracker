@@ -11,6 +11,8 @@
 
 #include <pthread.h>
 #include <semaphore.h>
+#include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -45,6 +47,8 @@ typedef struct {
     unsigned int *core_number;
 } printer_args_t;
 
+volatile sig_atomic_t working = true;
+
 void *reader_func(void *reader_args) {
     if (!reader_args) {
         printf("No args in reader func!\n");
@@ -52,7 +56,7 @@ void *reader_func(void *reader_args) {
     }
 
     reader_args_t *args = (reader_args_t *)reader_args;
-    for (;;) {
+    while (working) {
         sem_wait(args->stats_mutex);
         read_proc_stat(args->stats_buf, "/proc/stat");
         sem_post(args->stats_mutex);
@@ -68,7 +72,7 @@ void *analyzer_func(void *analyzer_args) {
     }
 
     analyzer_args_t *args = (analyzer_args_t *)analyzer_args;
-    for (;;) {
+    while (working) {
         sem_wait(args->stats_mutex);
         if (args->stats_buf->write_index < args->stats_buf->read_index)
             args->stats_buf->read_index = 0;
@@ -103,7 +107,7 @@ void *printer_func(void *printer_args) {
     }
 
     printer_args_t *args = (printer_args_t *)printer_args;
-    for (;;) {
+    while (working) {
         sem_wait(args->results_mutex);
         if (args->results_buf->write_index < args->results_buf->read_index)
             args->results_buf->read_index = 0;
@@ -126,12 +130,20 @@ void *printer_func(void *printer_args) {
     return NULL;
 }
 
+void end_program() { working = false; }
+
 int main(void) {
     ring_buffer_t *stats_buf = NULL, *results_buf = NULL;
     sem_t stats_mutex = {0}, results_mutex = {0};
     stat_packet_t *stat_packets = NULL;
     double *curr_results = NULL;
     unsigned int core_number = 0;
+
+    struct sigaction sigint = {0}, sigterm = {0};
+    sigint.sa_handler = end_program;
+    sigterm.sa_handler = end_program;
+    sigaction(SIGINT, &sigint, NULL);
+    sigaction(SIGTERM, &sigterm, NULL);
 
     read_cores_num(&core_number, "/proc/stat");
 
@@ -164,7 +176,7 @@ int main(void) {
     sem_destroy(&results_mutex);
     free(stat_packets);
     free(curr_results);
-    printf("\n");
+    printf("\nEnd of program\n");
 
     return EXIT_SUCCESS;
 }
