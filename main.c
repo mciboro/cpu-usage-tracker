@@ -1,7 +1,7 @@
 /**
  * @file main.c
  * @author Michał Ciborowski (mciborowski.it@gmail.com)
- * @brief Automatic test
+ * @brief CPU Usage Tracker
  * @version 0.1
  * @date 2023-03-04
  *
@@ -13,13 +13,10 @@
 #include <semaphore.h>
 #include <signal.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 #include "analyzer/analyzer.h"
 #include "reader/reader.h"
-#include "ring_buffer/ring_buffer.h"
 
 /**
  * @brief Struct holding previous and current informations

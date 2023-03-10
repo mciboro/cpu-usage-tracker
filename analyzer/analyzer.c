@@ -1,7 +1,8 @@
 /**
  * @file analyzer.c
- * @author your name (you@domain.com)
- * @brief
+ * @author Michał Ciborowski (mciborowski.it@gmail.com)
+ * @brief Implementations of functions related to cpu usage
+ * calculations.
  * @version 0.1
  * @date 2023-02-27
  *

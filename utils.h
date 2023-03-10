@@ -41,4 +41,8 @@ typedef struct {
     double result;
 } core_result_t;
 
+/**
+ * @brief Return values
+ * 
+ */
 enum ReturnTypes { SUCCESS, VOID_ARG, INV_ARG, FILE_ERROR };
