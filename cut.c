@@ -1,5 +1,5 @@
 /**
- * @file main.c
+ * @file cut.c
  * @author Michał Ciborowski (mciborowski.it@gmail.com)
  * @brief CPU Usage Tracker
  * @version 0.1
@@ -8,67 +8,10 @@
  * @copyright Copyright (c) 2023
  *
  */
-
-#include <pthread.h>
-#include <semaphore.h>
-#include <signal.h>
-#include <stdbool.h>
-#include <unistd.h>
-
-#include "analyzer/analyzer.h"
-#include "reader/reader.h"
-
-/**
- * @brief Struct holding previous and current informations
- * from proc stat file.
- *
- */
-typedef struct {
-    proc_stat_t prev;
-    proc_stat_t curr;
-} stat_packet_t;
-
-/**
- * @brief Arguments of reader function.
- *
- */
-typedef struct {
-    sem_t *stats_mutex;
-    ring_buffer_t *stats_buf;
-} reader_args_t;
-
-/**
- * @brief Arguments of analyzer function.
- *
- */
-typedef struct {
-    sem_t *stats_mutex;
-    sem_t *results_mutex;
-    ring_buffer_t *stats_buf;
-    ring_buffer_t *results_buf;
-    stat_packet_t *stat_packets;
-    unsigned int *core_number;
-} analyzer_args_t;
-
-/**
- * @brief Arguments of printer function.
- *
- */
-typedef struct {
-    sem_t *results_mutex;
-    ring_buffer_t *results_buf;
-    double *curr_results;
-    unsigned int *core_number;
-} printer_args_t;
+#include "cut.h"
 
 volatile sig_atomic_t working = true;
 
-/**
- * @brief Reader function called by reader thread.
- *
- * @param reader_args
- * @return void*
- */
 void *reader_func(void *reader_args) {
     if (!reader_args) {
         printf("No args in reader func!\n");

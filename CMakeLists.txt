@@ -22,7 +22,7 @@ target_include_directories(analyzer PUBLIC ./)
 add_executable(analyzer-test analyzer/analyzer_test.c)
 target_link_libraries(analyzer-test analyzer)
 
-add_executable(cut main.c)
+add_executable(cut cut.c)
 target_link_libraries(cut analyzer ringbuffer reader pthread)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
