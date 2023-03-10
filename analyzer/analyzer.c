@@ -29,8 +29,8 @@ double calculate_core_usage(unsigned int const previdle, unsigned int const prev
     double const idled = Idle - PrevIdle;
 
     double const result = (totald - idled) / totald * 100;
-    if(result != result) {
-        return 0;
+    if (result != result) {
+        return SUCCESS;
     } else {
         return result;
     }

@@ -58,7 +58,7 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
  * @param rbuf
  * @param src
  * @param type
- * @return unsigned int
+ * @return unsigned int - Status of the operation.
  */
 unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src);
 
@@ -68,6 +68,6 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src);
  * @param rbuf
  * @param data
  * @param type
- * @return unsigned int
+ * @return unsigned int - Status of the operation.
  */
 unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data);

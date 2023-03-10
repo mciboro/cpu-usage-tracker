@@ -32,11 +32,13 @@ typedef struct {
 } proc_stat_t;
 
 /**
- * @brief Structure holding current procent of 
+ * @brief Structure holding current procent of
  * core usage and number of a core.
- * 
+ *
  */
 typedef struct {
     uint32_t core_number;
     double result;
 } core_result_t;
+
+enum ReturnTypes { SUCCESS, VOID_ARG, INV_ARG, FILE_ERROR };

@@ -15,6 +15,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @brief Main function for analyzer library unit tests.
+ *
+ * @return int
+ */
 int main(void) {
     proc_stat_t curr_stat = {0, 534982, 864, 110714, 8074729, 15548, 0, 1189, 0};
     proc_stat_t prev_stat = {0, 535081, 864, 110753, 8076755, 15551, 0, 1190, 0};
@@ -26,5 +31,5 @@ int main(void) {
     calculate_core_usage_from_proc_stat_t(prev_stat, zero_stat);
     calculate_core_usage_from_proc_stat_t(zero_stat, zero_stat);
 
-    return EXIT_SUCCESS;
+    return SUCCESS;
 }

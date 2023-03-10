@@ -24,7 +24,7 @@
  *
  * @param rbuf - Pointer to ring buffer
  * @param proc_stat_dir - Directory of proc stat file
- * @return unsigned int
+ * @return unsigned int - Status of the operation.
  */
 unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_stat_dir);
 
@@ -33,6 +33,6 @@ unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_st
  *
  * @param result
  * @param proc_stat_dir
- * @return unsigned int
+ * @return unsigned int - Status of the operation.
  */
 unsigned int read_cores_num(unsigned int *const result, char const *const proc_stat_dir);

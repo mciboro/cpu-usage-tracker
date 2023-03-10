@@ -21,16 +21,29 @@
 #include "reader/reader.h"
 #include "ring_buffer/ring_buffer.h"
 
+/**
+ * @brief Struct holding previous and current informations
+ * from proc stat file.
+ *
+ */
 typedef struct {
     proc_stat_t prev;
     proc_stat_t curr;
 } stat_packet_t;
 
+/**
+ * @brief Arguments of reader function.
+ *
+ */
 typedef struct {
     sem_t *stats_mutex;
     ring_buffer_t *stats_buf;
 } reader_args_t;
 
+/**
+ * @brief Arguments of analyzer function.
+ *
+ */
 typedef struct {
     sem_t *stats_mutex;
     sem_t *results_mutex;
@@ -40,6 +53,10 @@ typedef struct {
     unsigned int *core_number;
 } analyzer_args_t;
 
+/**
+ * @brief Arguments of printer function.
+ *
+ */
 typedef struct {
     sem_t *results_mutex;
     ring_buffer_t *results_buf;
@@ -49,6 +66,12 @@ typedef struct {
 
 volatile sig_atomic_t working = true;
 
+/**
+ * @brief Reader function called by reader thread.
+ *
+ * @param reader_args
+ * @return void*
+ */
 void *reader_func(void *reader_args) {
     if (!reader_args) {
         printf("No args in reader func!\n");
@@ -65,6 +88,12 @@ void *reader_func(void *reader_args) {
     return NULL;
 }
 
+/**
+ * @brief Analyzer function called by analyzer thread.
+ *
+ * @param analyzer_args
+ * @return void*
+ */
 void *analyzer_func(void *analyzer_args) {
     if (!analyzer_args) {
         printf("No args in analyzer func!\n");
@@ -100,6 +129,12 @@ void *analyzer_func(void *analyzer_args) {
     return NULL;
 }
 
+/**
+ * @brief Printer function called by printer thread.
+ *
+ * @param printer_args
+ * @return void*
+ */
 void *printer_func(void *printer_args) {
     if (!printer_args) {
         printf("No args in printer func!\n");
@@ -130,8 +165,17 @@ void *printer_func(void *printer_args) {
     return NULL;
 }
 
+/**
+ * @brief Function needed to end program.
+ *
+ */
 void end_program() { working = false; }
 
+/**
+ * @brief Main function of CUT.
+ *
+ * @return int
+ */
 int main(void) {
     ring_buffer_t *stats_buf = NULL, *results_buf = NULL;
     sem_t stats_mutex = {0}, results_mutex = {0};
@@ -178,5 +222,5 @@ int main(void) {
     free(curr_results);
     printf("\nEnd of program\n");
 
-    return EXIT_SUCCESS;
+    return SUCCESS;
 }

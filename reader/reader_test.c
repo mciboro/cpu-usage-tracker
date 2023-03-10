@@ -19,9 +19,9 @@
 int main(void) {
     ring_buffer_t *rbuf = NULL;
     assert(!ringbuffer_create(&rbuf, RING_BUFFER_SIZE));
-    assert(read_proc_stat(NULL, "../reader/proc_stat_example1.txt") == 1);
-    assert(read_proc_stat(rbuf, NULL) == 2);
-    assert(read_proc_stat(rbuf, "/proc/null") == 3);
+    assert(read_proc_stat(NULL, "../reader/proc_stat_example1.txt") == VOID_ARG);
+    assert(read_proc_stat(rbuf, NULL) == INV_ARG);
+    assert(read_proc_stat(rbuf, "/proc/null") == FILE_ERROR);
     assert(!read_proc_stat(rbuf, "../reader/test_srcs/proc_stat_example1.txt"));
     assert(rbuf->write_index == 4);
     assert(rbuf->data[0].stat.core_number == 0);
@@ -51,5 +51,5 @@ int main(void) {
     assert(rbuf->write_index == 0);
     ringbuffer_destroy(&rbuf);
 
-    return EXIT_SUCCESS;
+    return SUCCESS;
 }

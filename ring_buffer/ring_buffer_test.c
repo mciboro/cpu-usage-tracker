@@ -12,6 +12,11 @@
 
 #include "ring_buffer.h"
 
+/**
+ * @brief Main function for ring buffer library unit tests.
+ *
+ * @return int
+ */
 int main(void) {
     ring_buffer_t *rbuf = NULL;
     assert(!ringbuffer_create(&rbuf, RING_BUFFER_SIZE));
@@ -24,7 +29,7 @@ int main(void) {
     proc_stat_t test_stat = {3, 396374, 5, 64126, 1974716, 334, 0, 9126, 0};
     data_t test_data = {0};
     test_data.stat = test_stat;
-    assert(ringbuffer_add(NULL, test_data) == 1);
+    assert(ringbuffer_add(NULL, test_data) == VOID_ARG);
     assert(!ringbuffer_add(rbuf, test_data));
     assert(rbuf->write_index == 1);
     assert(rbuf->data[rbuf->read_index].stat.steal == test_data.stat.steal);
@@ -40,7 +45,7 @@ int main(void) {
     ringbuffer_create(&rbuf_null, 0);
     assert(!rbuf_null);
 
-    assert(ringbuffer_destroy(&rbuf_null) == 1);
+    assert(ringbuffer_destroy(&rbuf_null) == VOID_ARG);
 
-    return EXIT_SUCCESS;
+    return SUCCESS;
 }
