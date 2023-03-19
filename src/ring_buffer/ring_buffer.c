@@ -13,10 +13,14 @@
 unsigned int ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size) {
     if (size > 0) {
         ring_buffer_t *rbuf = malloc(sizeof(ring_buffer_t) + sizeof(data_t) * size);
+        memset(rbuf, 0, sizeof(ring_buffer_t) + sizeof(data_t) * size);
         rbuf->struct_len = sizeof(ring_buffer_t) + sizeof(data_t) * size;
         rbuf->size = size;
         rbuf->read_index = 0;
         rbuf->write_index = 0;
+        sem_init(&rbuf->empty, 0, rbuf->size);
+        sem_init(&rbuf->full, 0, 0);
+        pthread_mutex_init(&rbuf->lock, NULL);
         *_rbuf = rbuf;
         return SUCCESS;
     } else {
@@ -28,6 +32,9 @@ unsigned int ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size) {
 unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
     ring_buffer_t *rbuf = *_rbuf;
     if (rbuf) {
+        sem_destroy(&rbuf->empty);
+        sem_destroy(&rbuf->full);
+        pthread_mutex_destroy(&rbuf->lock);
         free(rbuf);
         *_rbuf = NULL;
         return SUCCESS;
@@ -43,13 +50,12 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src) {
         return VOID_ARG;
     }
 
+    sem_wait(&rbuf->empty);
+    pthread_mutex_lock(&rbuf->lock);
     rbuf->data[rbuf->write_index] = src;
-
-    if ((rbuf->write_index + 1) < RING_BUFFER_SIZE) {
-        ++rbuf->write_index;
-    } else {
-        rbuf->write_index = 0;
-    }
+    rbuf->write_index = (rbuf->write_index + 1) % rbuf->size;
+    pthread_mutex_unlock(&rbuf->lock);
+    sem_post(&rbuf->full);
 
     return SUCCESS;
 }
@@ -65,6 +71,12 @@ unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data) {
         return VOID_ARG;
     }
 
-    *data = rbuf->data[rbuf->read_index++];
+    sem_wait(&rbuf->full);
+    pthread_mutex_lock(&rbuf->lock);
+    *data = rbuf->data[rbuf->read_index];
+    rbuf->read_index = (rbuf->read_index + 1) % rbuf->size;
+    pthread_mutex_unlock(&rbuf->lock);
+    sem_post(&rbuf->empty);
+
     return SUCCESS;
 }

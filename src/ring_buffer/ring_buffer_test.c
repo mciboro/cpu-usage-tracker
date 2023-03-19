@@ -21,7 +21,7 @@ int main(void) {
     ring_buffer_t *rbuf = NULL;
     assert(!ringbuffer_create(&rbuf, RING_BUFFER_SIZE));
     assert(rbuf);
-    assert(rbuf->struct_len == 10256);
+    assert(rbuf->struct_len == 10360);
     assert(rbuf->size == RING_BUFFER_SIZE);
     assert(rbuf->write_index == 0);
     assert(rbuf->read_index == 0);

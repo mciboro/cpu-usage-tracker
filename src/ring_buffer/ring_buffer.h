@@ -10,6 +10,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <string.h>
 
 #include "utils.h"
 
@@ -33,6 +36,9 @@ typedef struct {
     unsigned int write_index;
     unsigned int read_index;
     unsigned int struct_len;
+    pthread_mutex_t lock;
+    sem_t empty;
+    sem_t full;
     data_t data[];
 } ring_buffer_t;
 

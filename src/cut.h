@@ -10,8 +10,6 @@
  */
 #pragma once
 
-#include <pthread.h>
-#include <semaphore.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -34,7 +32,6 @@ typedef struct {
  *
  */
 typedef struct {
-    sem_t *stats_mutex;
     ring_buffer_t *stats_buf;
 } reader_args_t;
 
@@ -43,8 +40,6 @@ typedef struct {
  *
  */
 typedef struct {
-    sem_t *stats_mutex;
-    sem_t *results_mutex;
     ring_buffer_t *stats_buf;
     ring_buffer_t *results_buf;
     stat_packet_t *stat_packets;
@@ -56,15 +51,7 @@ typedef struct {
  *
  */
 typedef struct {
-    sem_t *results_mutex;
     ring_buffer_t *results_buf;
     double *curr_results;
     unsigned int *core_number;
 } printer_args_t;
-
-/**
- * @brief Reader function called by reader thread.
- *
- * @param reader_args
- * @return void*
- */

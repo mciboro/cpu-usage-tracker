@@ -31,7 +31,7 @@ double calculate_core_usage(unsigned int const previdle, unsigned int const prev
 
     double const result = (totald - idled) / totald * 100;
     if (result != result) {
-        return SUCCESS;
+        return 0;
     } else {
         return result;
     }

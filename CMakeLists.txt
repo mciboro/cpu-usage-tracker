@@ -11,6 +11,7 @@ target_link_libraries(reader-test reader ringbuffer)
 target_include_directories(reader-test PUBLIC src/)
 
 add_library(ringbuffer SHARED src/ring_buffer/ring_buffer.c)
+target_link_libraries(ringbuffer pthread)
 target_include_directories(ringbuffer PUBLIC src/)
 
 add_executable(ringbuffer-test src/ring_buffer/ring_buffer_test.c)
