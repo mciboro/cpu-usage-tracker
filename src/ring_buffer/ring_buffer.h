@@ -25,6 +25,7 @@
 typedef union {
     proc_stat_t stat;
     core_result_t result;
+    char log[40];
 } data_t;
 
 /**

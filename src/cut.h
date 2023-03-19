@@ -16,6 +16,7 @@
 
 #include "analyzer/analyzer.h"
 #include "reader/reader.h"
+#include "logger/logger.h"
 
 /**
  * @brief Struct holding previous and current informations

@@ -89,6 +89,20 @@ void *printer_func(void *printer_args) {
 }
 
 /**
+ * @brief Logger function called by logger thread.
+ *
+ * @return void*
+ */
+void *logger_func() {
+    while (working) {
+        data_t tmp = {0};
+        ringbuffer_get(logger_buf, &tmp);
+        printf("LOG: %s\n", tmp.log);
+    }
+    return NULL;
+}
+
+/**
  * @brief Function needed to end program.
  *
  */
@@ -96,6 +110,7 @@ void end_program() {
     working = false;
     sem_post(&results_buf->full);
     sem_post(&stats_buf->full);
+    sem_post(&logger_buf->full);
 }
 
 /**
@@ -118,6 +133,8 @@ int main(void) {
     sigaction(SIGINT, &sigint, NULL);
     sigaction(SIGTERM, &sigterm, NULL);
 
+    register_logger_buf(RING_BUFFER_SIZE);
+
     read_cores_num(&core_number, "/proc/stat");
 
     stat_packets = malloc(sizeof(stat_packet_t) * core_number);
@@ -128,23 +145,26 @@ int main(void) {
     ringbuffer_create(&stats_buf, RING_BUFFER_SIZE);
     ringbuffer_create(&results_buf, RING_BUFFER_SIZE);
 
-    pthread_t reader = {0}, analyzer = {0}, printer = {0};
+    pthread_t reader = {0}, analyzer = {0}, printer = {0}, logger = {0};
     reader_args_t reader_args = {stats_buf};
     pthread_create(&reader, NULL, reader_func, &reader_args);
     analyzer_args_t analyzer_args = {stats_buf, results_buf, stat_packets, &core_number};
     pthread_create(&analyzer, NULL, analyzer_func, &analyzer_args);
     printer_args_t printer_args = {results_buf, curr_results, &core_number};
     pthread_create(&printer, NULL, printer_func, &printer_args);
+    pthread_create(&logger, NULL, logger_func, NULL);
 
     pthread_join(reader, NULL);
     pthread_join(analyzer, NULL);
     pthread_join(printer, NULL);
+    pthread_join(logger, NULL);
 
+    destroy_logger_buf();
     ringbuffer_destroy(&stats_buf);
     ringbuffer_destroy(&results_buf);
     free(stat_packets);
     free(curr_results);
-    printf("\nEnd of program\n");
+    printf("\r----------------------------End of program----------------------------\n");
 
     return SUCCESS;
 }
