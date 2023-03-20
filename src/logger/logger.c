@@ -19,6 +19,11 @@ unsigned int put_log(char const *const log) {
         printf("Log cannot be null!\n");
         return INV_ARG;
     }
+    if (!logger_buf) {
+        printf("LOG: %s\n", log);
+        return SUCCESS;
+    }
+
     data_t log_data = {0};
     strcpy(log_data.log, log);
     unsigned int status = ringbuffer_add(logger_buf, log_data);
@@ -33,6 +38,4 @@ unsigned int register_logger_buf(unsigned int const size) {
     return ringbuffer_create(&logger_buf, size);
 }
 
-unsigned int destroy_logger_buf() {
-    return ringbuffer_destroy(&logger_buf);
-}
+unsigned int destroy_logger_buf() { return ringbuffer_destroy(&logger_buf); }

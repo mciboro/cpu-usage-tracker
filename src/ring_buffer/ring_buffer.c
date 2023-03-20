@@ -24,7 +24,7 @@ unsigned int ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size) {
         *_rbuf = rbuf;
         return SUCCESS;
     } else {
-        printf("Size of ring buffer must be non zero!\n");
+        put_log("Size of ring buffer must be non zero!");
         return INV_ARG;
     }
 }
@@ -39,14 +39,14 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
         *_rbuf = NULL;
         return SUCCESS;
     } else {
-        printf("Memory already void!\n");
+        put_log("Memory already void!");
         return VOID_ARG;
     }
 }
 
 unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src) {
     if (!rbuf) {
-        printf("Ring buffer void!\n");
+        put_log("Ring buffer void!");
         return VOID_ARG;
     }
 
@@ -62,12 +62,12 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src) {
 
 unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data) {
     if (!rbuf) {
-        printf("Ring buffer void!\n");
+        put_log("Ring buffer void!");
         return VOID_ARG;
     }
 
     if (!data) {
-        printf("Data object cannot be void!\n");
+        put_log("Data object cannot be void!");
         return VOID_ARG;
     }
 

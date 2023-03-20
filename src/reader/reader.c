@@ -13,18 +13,18 @@
 
 unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_stat_dir) {
     if (!rbuf) {
-        printf("There is no ring buffer!\n");
+        put_log("There is no ring buffer!");
         return VOID_ARG;
     }
 
     if (!proc_stat_dir) {
-        printf("There is no proc stat file direction!\n");
+        put_log("There is no proc stat file direction!");
         return INV_ARG;
     }
 
     FILE *fptr = fopen(proc_stat_dir, "r");
     if (!fptr) {
-        printf("Error while opening proc stat file!\n");
+        put_log("Error while opening proc stat file!");
         return FILE_ERROR;
     }
 
@@ -48,18 +48,18 @@ unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_st
 unsigned int read_cores_num(unsigned int *const result, char const *const proc_stat_dir) {
     unsigned int core_number = 0;
     if (!result) {
-        printf("There is no object to put in result!\n");
+        put_log("There is no object to put in result!");
         return VOID_ARG;
     }
 
     if (!proc_stat_dir) {
-        printf("There is no proc stat file direction!\n");
+        put_log("There is no proc stat file direction!");
         return INV_ARG;
     }
 
     FILE *fptr = fopen(proc_stat_dir, "r");
     if (!fptr) {
-        printf("Error while opening proc stat file!\n");
+        put_log("Error while opening proc stat file!");
         return FILE_ERROR;
     }
 

@@ -15,7 +15,7 @@ ring_buffer_t *stats_buf = NULL, *results_buf = NULL;
 
 void *reader_func(void *reader_args) {
     if (!reader_args) {
-        printf("No args in reader func!\n");
+        put_log("No args in reader func!");
         return NULL;
     }
 
@@ -36,7 +36,7 @@ void *reader_func(void *reader_args) {
  */
 void *analyzer_func(void *analyzer_args) {
     if (!analyzer_args) {
-        printf("No args in analyzer func!\n");
+        put_log("No args in analyzer func!");
         return NULL;
     }
 
@@ -54,6 +54,11 @@ void *analyzer_func(void *analyzer_args) {
             data_t result_data = {0};
             result_data.result.core_number = i;
             result_data.result.result = result;
+            if(result > 99.9) {
+                char log[40] = {0};
+                sprintf(log, "Core number %d overload!", i);
+                put_log(log);
+            }
             ringbuffer_add(args->results_buf, result_data);
         }
     }
@@ -68,7 +73,7 @@ void *analyzer_func(void *analyzer_args) {
  */
 void *printer_func(void *printer_args) {
     if (!printer_args) {
-        printf("No args in printer func!\n");
+        put_log("No args in printer func!");
         return NULL;
     }
 
@@ -93,12 +98,19 @@ void *printer_func(void *printer_args) {
  *
  * @return void*
  */
-void *logger_func() {
+void *logger_func(void *logger_args) {
+    logger_args_t *args = (logger_args_t *)logger_args;
+    FILE *fptr = fopen(args->log_filename, "w");
+    if (!fptr) {
+        printf("Error while opening proc stat file!\n");
+        return NULL;
+    }
     while (working) {
         data_t tmp = {0};
         ringbuffer_get(logger_buf, &tmp);
-        printf("LOG: %s\n", tmp.log);
+        fprintf(fptr, "LOG: %s\n", tmp.log);
     }
+    fclose(fptr);
     return NULL;
 }
 
@@ -118,7 +130,11 @@ void end_program() {
  *
  * @return int
  */
-int main(void) {
+int main(int argc, char **argv) {
+    if (argc > 2) {
+        printf("Usage: cut [LOG FILENAME]\n");
+    }
+
     stat_packet_t *stat_packets = NULL;
     double *curr_results = NULL;
     unsigned int core_number = 0;
@@ -152,7 +168,13 @@ int main(void) {
     pthread_create(&analyzer, NULL, analyzer_func, &analyzer_args);
     printer_args_t printer_args = {results_buf, curr_results, &core_number};
     pthread_create(&printer, NULL, printer_func, &printer_args);
-    pthread_create(&logger, NULL, logger_func, NULL);
+    logger_args_t logger_args = {0};
+    if (argc == 2 && argv[1]) {
+        logger_args.log_filename = argv[1];
+    } else {
+        logger_args.log_filename = "./log.txt";
+    }
+    pthread_create(&logger, NULL, logger_func, &logger_args);
 
     pthread_join(reader, NULL);
     pthread_join(analyzer, NULL);

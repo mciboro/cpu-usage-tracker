@@ -12,6 +12,7 @@
 #include <string.h>
 
 #include "ring_buffer/ring_buffer.h"
+#include "logger/logger.h"
 
 #define MAX_LINE_SIZE 256 // Max size of one line read from file
 
