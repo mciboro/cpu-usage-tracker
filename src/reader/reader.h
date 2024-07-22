@@ -11,7 +11,9 @@
 
 #include <string.h>
 
+#include "globals.h"
 #include "ring_buffer/ring_buffer.h"
+#include "logger/logger.h"
 
 #define MAX_LINE_SIZE 256 // Max size of one line read from file
 
@@ -21,15 +23,15 @@
  *
  * @param rbuf - Pointer to ring buffer
  * @param proc_stat_dir - Directory of proc stat file
- * @return unsigned int - Status of the operation.
+ * @return ReturnType_t - Status of the operation.
  */
-unsigned int read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_stat_dir);
+ReturnType_t read_proc_stat(ring_buffer_t *const rbuf, char const *const proc_stat_dir);
 
 /**
  * @brief Function that reads number of CPU cores from proc stat file.
  *
  * @param result
  * @param proc_stat_dir
- * @return unsigned int - Status of the operation.
+ * @return ReturnType_t - Status of the operation.
  */
-unsigned int read_cores_num(unsigned int *const result, char const *const proc_stat_dir);
+ReturnType_t read_cores_num(unsigned int *const result, char const *const proc_stat_dir);

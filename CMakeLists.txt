@@ -3,7 +3,11 @@ project(cpu-usage-tracker VERSION 0.1.0)
 
 add_compile_options(-Wall -Wextra -Wpedantic)
 
+add_library(logger SHARED src/logger/logger.c)
+target_include_directories(logger PUBLIC src/)
+
 add_library(reader SHARED src/reader/reader.c)
+target_link_libraries(reader logger)
 target_include_directories(reader PUBLIC src/)
 
 add_executable(reader-test src/reader/reader_test.c)
@@ -23,8 +27,11 @@ target_include_directories(analyzer PUBLIC src/)
 add_executable(analyzer-test src/analyzer/analyzer_test.c)
 target_link_libraries(analyzer-test analyzer)
 
+add_library(watchdog SHARED src/watchdog/watchdog.c)
+target_include_directories(watchdog PUBLIC src/)
+
 add_executable(cut src/cut.c)
-target_link_libraries(cut analyzer ringbuffer reader pthread)
+target_link_libraries(cut analyzer ringbuffer reader logger watchdog pthread)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

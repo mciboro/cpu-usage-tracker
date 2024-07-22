@@ -16,6 +16,8 @@
 
 #include "analyzer/analyzer.h"
 #include "reader/reader.h"
+#include "logger/logger.h"
+#include "watchdog/watchdog.h"
 
 /**
  * @brief Struct holding previous and current informations
@@ -28,20 +30,10 @@ typedef struct {
 } stat_packet_t;
 
 /**
- * @brief Arguments of reader function.
- *
- */
-typedef struct {
-    ring_buffer_t *stats_buf;
-} reader_args_t;
-
-/**
  * @brief Arguments of analyzer function.
  *
  */
 typedef struct {
-    ring_buffer_t *stats_buf;
-    ring_buffer_t *results_buf;
     stat_packet_t *stat_packets;
     unsigned int *core_number;
 } analyzer_args_t;
@@ -51,7 +43,14 @@ typedef struct {
  *
  */
 typedef struct {
-    ring_buffer_t *results_buf;
     double *curr_results;
     unsigned int *core_number;
 } printer_args_t;
+
+/**
+ * @brief Arguments of printer function.
+ *
+ */
+typedef struct {
+    char *logger_filename;
+} logger_args_t;

@@ -13,6 +13,24 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
+
+/**
+ * @brief For suppresing unused parameters 
+ * 
+ */
+#define UNUSED(x) (void)(x)
+
+/**
+ * @brief Return values
+ * 
+ */
+typedef enum { SUCCESS, VOID_ARG, INV_ARG, FILE_ERROR, MEMORY_ERROR, RET_ERROR, WAIT_TIMEOUT } ReturnType_t;
+typedef enum { READER, ANALYZER, PRINTER, LOGGER, WATCHDOG } ThreadType_t;
+
+const char *ThreadNames[] = {"Reader", "Analyzer", "Printer", "Logger", "Watchdog"};
 
 /**
  * @brief Structure holding statistics extracted
@@ -42,7 +60,20 @@ typedef struct {
 } core_result_t;
 
 /**
- * @brief Return values
- * 
+ * @brief Structure of log which is written to  
+ * log file.
+ *
  */
-enum ReturnTypes { SUCCESS, VOID_ARG, INV_ARG, FILE_ERROR };
+typedef struct {
+    time_t timestamp;
+    char *text;
+} log_t;
+
+/**
+ * @brief Heartbeat structure which is used by
+ * threads to report to watchdod their activity 
+ */
+typedef struct {
+    struct timespec timestamp;
+    ThreadType_t thread_type;
+} heartbeat_t;

@@ -12,6 +12,7 @@
 #pragma once
 
 #include "utils.h"
+#include "globals.h"
 
 /**
  * @brief Function that calculates core usage.

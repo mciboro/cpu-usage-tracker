@@ -13,6 +13,8 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <string.h>
+#include <errno.h>
+#include <time.h>
 
 #include "utils.h"
 
@@ -25,6 +27,8 @@
 typedef union {
     proc_stat_t stat;
     core_result_t result;
+    log_t log;
+    heartbeat_t heartbeat;
 } data_t;
 
 /**
@@ -46,34 +50,43 @@ typedef struct {
  * @brief Constructor of ring buffer
  *
  * @param _rbuf Pointer to pointer to ring buffer.
- * @return unsigned int - Status of the operation.
+ * @return ReturnType_t - Status of the operation.
  */
-unsigned int ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size);
+ReturnType_t ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size);
 
 /**
  * @brief Destructor of ringbuffer.
  *
  * @param rbuf Pointer to pointer to ring buffer.
- * @return unsigned int - Status of the operation.
+ * @return ReturnType_t - Status of the operation.
  */
-unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf);
+ReturnType_t ringbuffer_destroy(ring_buffer_t **_rbuf);
 
 /**
  * @brief Function that adds element to the buffer.
  *
  * @param rbuf
  * @param src
- * @param type
- * @return unsigned int - Status of the operation.
+ * @return ReturnType_t - Status of the operation.
  */
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src);
+ReturnType_t ringbuffer_add(ring_buffer_t *const rbuf, data_t const src);
 
 /**
  * @brief Function that retrieves element from the buffer.
  *
  * @param rbuf
  * @param data
- * @param type
- * @return unsigned int - Status of the operation.
+ * @return ReturnType_t - Status of the operation.
  */
-unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data);
+ReturnType_t ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data);
+
+/**
+ * @brief Function that retrieves element from the buffer or returns after number
+ * of seconds given by parameter timeout if there is nothing to retrieve.
+ *
+ * @param rbuf
+ * @param data
+ * @param timeout
+ * @return ReturnType_t - Status of the operation.
+ */
+ReturnType_t ringbuffer_timed_get(ring_buffer_t *const rbuf, data_t *const data, unsigned timeout);

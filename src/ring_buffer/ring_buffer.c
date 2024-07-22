@@ -10,7 +10,7 @@
 
 #include "ring_buffer.h"
 
-unsigned int ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size) {
+ReturnType_t ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size) {
     if (size > 0) {
         ring_buffer_t *rbuf = malloc(sizeof(ring_buffer_t) + sizeof(data_t) * size);
         memset(rbuf, 0, sizeof(ring_buffer_t) + sizeof(data_t) * size);
@@ -29,7 +29,7 @@ unsigned int ringbuffer_create(ring_buffer_t **_rbuf, unsigned int const size) {
     }
 }
 
-unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
+ReturnType_t ringbuffer_destroy(ring_buffer_t **_rbuf) {
     ring_buffer_t *rbuf = *_rbuf;
     if (rbuf) {
         sem_destroy(&rbuf->empty);
@@ -44,7 +44,7 @@ unsigned int ringbuffer_destroy(ring_buffer_t **_rbuf) {
     }
 }
 
-unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src) {
+ReturnType_t ringbuffer_add(ring_buffer_t *const rbuf, data_t const src) {
     if (!rbuf) {
         printf("Ring buffer void!\n");
         return VOID_ARG;
@@ -60,7 +60,7 @@ unsigned int ringbuffer_add(ring_buffer_t *const rbuf, data_t const src) {
     return SUCCESS;
 }
 
-unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data) {
+ReturnType_t ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data) {
     if (!rbuf) {
         printf("Ring buffer void!\n");
         return VOID_ARG;
@@ -77,6 +77,44 @@ unsigned int ringbuffer_get(ring_buffer_t *const rbuf, data_t *const data) {
     rbuf->read_index = (rbuf->read_index + 1) % rbuf->size;
     pthread_mutex_unlock(&rbuf->lock);
     sem_post(&rbuf->empty);
+
+    return SUCCESS;
+}
+
+ReturnType_t ringbuffer_timed_get(ring_buffer_t *const rbuf, data_t *const data, unsigned timeout) {
+    if (!rbuf) {
+        printf("Ring buffer void!\n");
+        return VOID_ARG;
+    }
+
+    if (!data) {
+        printf("Data object cannot be void!\n");
+        return VOID_ARG;
+    }
+
+    struct timespec ts = {0};
+    int sem_status = 0;
+
+    if (clock_gettime(CLOCK_REALTIME, &ts) == -1) {
+        printf("Unable to get time!");
+        return RET_ERROR;
+    }
+    ts.tv_sec += timeout;
+
+    sem_status = sem_timedwait(&rbuf->full, &ts);
+    if (sem_status == -1) {
+        if (errno == ETIMEDOUT) {
+            return WAIT_TIMEOUT;
+        } else {
+            return RET_ERROR;
+        }
+    } else {
+        pthread_mutex_lock(&rbuf->lock);
+        *data = rbuf->data[rbuf->read_index];
+        rbuf->read_index = (rbuf->read_index + 1) % rbuf->size;
+        pthread_mutex_unlock(&rbuf->lock);
+        sem_post(&rbuf->empty);
+    }
 
     return SUCCESS;
 }

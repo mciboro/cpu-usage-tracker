@@ -10,19 +10,18 @@
  */
 #include "cut.h"
 
+void end_program();
+
 volatile sig_atomic_t working = true;
-ring_buffer_t *stats_buf = NULL, *results_buf = NULL;
 
-void *reader_func(void *reader_args) {
-    if (!reader_args) {
-        printf("No args in reader func!\n");
-        return NULL;
-    }
-
-    reader_args_t *args = (reader_args_t *)reader_args;
+void *reader_func(void *_) {
+    UNUSED(_);
+   
+    send_log("Begin of reader thread!");
     while (working) {
+        send_heartbeat(READER);
 
-        read_proc_stat(args->stats_buf, "/proc/stat");
+        read_proc_stat(stats_buf, "/proc/stat");
         sleep(1);
     }
     return NULL;
@@ -37,14 +36,18 @@ void *reader_func(void *reader_args) {
 void *analyzer_func(void *analyzer_args) {
     if (!analyzer_args) {
         printf("No args in analyzer func!\n");
+        send_log("No args in analyzer func!");
         return NULL;
     }
 
     analyzer_args_t *args = (analyzer_args_t *)analyzer_args;
+
+    send_log("Begin of analyzer thread!");
     while (working) {
+        send_heartbeat(ANALYZER);
         data_t tmp = {0};
 
-        ringbuffer_get(args->stats_buf, &tmp);
+        ringbuffer_get(stats_buf, &tmp);
         args->stat_packets[tmp.stat.core_number].prev = args->stat_packets[tmp.stat.core_number].curr;
         args->stat_packets[tmp.stat.core_number].curr = tmp.stat;
 
@@ -54,7 +57,7 @@ void *analyzer_func(void *analyzer_args) {
             data_t result_data = {0};
             result_data.result.core_number = i;
             result_data.result.result = result;
-            ringbuffer_add(args->results_buf, result_data);
+            ringbuffer_add(results_buf, result_data);
         }
     }
     return NULL;
@@ -69,14 +72,18 @@ void *analyzer_func(void *analyzer_args) {
 void *printer_func(void *printer_args) {
     if (!printer_args) {
         printf("No args in printer func!\n");
+        send_log("No args in printer func!");
         return NULL;
     }
 
     printer_args_t *args = (printer_args_t *)printer_args;
+
+    send_log("Begin of printer thread!");
     while (working) {
+        send_heartbeat(PRINTER);
         data_t tmp = {0};
 
-        ringbuffer_get(args->results_buf, &tmp);
+        ringbuffer_get(results_buf, &tmp);
         args->curr_results[tmp.result.core_number] = tmp.result.result;
 
         for (unsigned int i = 0; i < *args->core_number; i++) {
@@ -89,13 +96,86 @@ void *printer_func(void *printer_args) {
 }
 
 /**
+ * @brief Logger function called by logger thread.
+ *
+ * @param logger_args
+ * @return void*
+ */
+void *logger_func(void *logger_args) {
+    if (!logger_args) {
+        printf("No args in logger func!\n");
+        return NULL;
+    }
+
+    logger_args_t *args = (logger_args_t *)logger_args;
+    
+    FILE *fptr = fopen(args->logger_filename, "w");
+    if (!fptr) {
+        printf("Error while opening logs file!\n");
+        return NULL;
+    }
+
+    send_log("Begin of logger thread!");
+    while (working) {
+        data_t item = {0};
+        ringbuffer_get(logger_buf, &item);
+
+        if (item.log.text) {
+            struct tm ts;
+            char date[80];
+            ts = *localtime(&item.log.timestamp);
+            strftime(date, sizeof(date), "%Y-%m-%d %H:%M:%S", &ts);
+
+            fprintf(fptr, "%s: %s\n", date, item.log.text);
+            free(item.log.text);
+        }
+    }
+
+    fclose(fptr);
+    return NULL;
+}
+
+/**
+ * @brief Function called by watchdog thread. 
+ * 
+ * @param _ 
+ * @return void* 
+ */
+void *watchdog_func(void *_) {
+    UNUSED(_);
+
+    send_log("Begin of watchdog thread!");
+    init_heartbeat_status();
+    while (working) {
+        data_t item = {0};
+        ReturnType_t ret = ringbuffer_timed_get(watchdog_buf, &item, 1);
+        if (ret == SUCCESS) {
+            update_heartbeat_status(item.heartbeat.thread_type, item.heartbeat.timestamp);
+        } else if (ret != WAIT_TIMEOUT) {
+            end_program();
+        }
+
+        if (check_heartbeat_status() == WATCHDOG_TIMEOUT) {
+            end_program();
+        }
+    }
+
+    return NULL;
+}
+
+
+
+/**
  * @brief Function needed to end program.
  *
  */
 void end_program() {
+    send_log("Ending threads!");
+
     working = false;
     sem_post(&results_buf->full);
     sem_post(&stats_buf->full);
+    sem_post(&logger_buf->full);
 }
 
 /**
@@ -120,28 +200,34 @@ int main(void) {
 
     read_cores_num(&core_number, "/proc/stat");
 
-    stat_packets = malloc(sizeof(stat_packet_t) * core_number);
-    memset(stat_packets, 0, sizeof(stat_packet_t) * core_number);
-    curr_results = malloc(sizeof(double) * core_number);
-    memset(curr_results, 0, sizeof(double) * core_number);
+    stat_packets = calloc(1, sizeof(stat_packet_t) * core_number);
+    curr_results = calloc(1, sizeof(double) * core_number);
 
     ringbuffer_create(&stats_buf, RING_BUFFER_SIZE);
     ringbuffer_create(&results_buf, RING_BUFFER_SIZE);
+    ringbuffer_create(&logger_buf, RING_BUFFER_SIZE);
+    ringbuffer_create(&watchdog_buf, RING_BUFFER_SIZE);
 
-    pthread_t reader = {0}, analyzer = {0}, printer = {0};
-    reader_args_t reader_args = {stats_buf};
-    pthread_create(&reader, NULL, reader_func, &reader_args);
-    analyzer_args_t analyzer_args = {stats_buf, results_buf, stat_packets, &core_number};
+    pthread_t reader = {0}, analyzer = {0}, printer = {0}, logger = {0}, watchdog = {0};
+    pthread_create(&reader, NULL, reader_func, NULL);
+    analyzer_args_t analyzer_args = {stat_packets, &core_number};
     pthread_create(&analyzer, NULL, analyzer_func, &analyzer_args);
-    printer_args_t printer_args = {results_buf, curr_results, &core_number};
+    printer_args_t printer_args = {curr_results, &core_number};
     pthread_create(&printer, NULL, printer_func, &printer_args);
+    logger_args_t logger_args = {"logs.txt"};
+    pthread_create(&logger, NULL, logger_func, &logger_args);
+    pthread_create(&watchdog, NULL, watchdog_func, NULL);
 
     pthread_join(reader, NULL);
     pthread_join(analyzer, NULL);
     pthread_join(printer, NULL);
+    pthread_join(logger, NULL);
+    pthread_join(watchdog, NULL);
 
     ringbuffer_destroy(&stats_buf);
     ringbuffer_destroy(&results_buf);
+    ringbuffer_destroy(&logger_buf);
+    ringbuffer_destroy(&watchdog_buf);
     free(stat_packets);
     free(curr_results);
     printf("\nEnd of program\n");
